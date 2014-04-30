@@ -1,0 +1,26 @@
+{
+  "name": "math",
+  "version": "0.0.0",
+  "description": "math collab",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hansolo669/math.git"
+  },
+  "keywords": [
+    "math",
+    "collab"
+  ],
+  "author": "hansolo669",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hansolo669/math/issues"
+  },
+  "homepage": "https://github.com/hansolo669/math",
+  "dependencies": {
+    "express": "^4.1.1"
+  }
+}
