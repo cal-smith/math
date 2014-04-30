@@ -1,8 +1,16 @@
 var express = require("express");
 var app = express();
+var io = require('socket.io').listen(app);
 
 app.get('/', function(req, res) {
-  res.send('<title>Hello</title>Hello World!');
+  res.sendfile(__dirname + '/index.html');
+});
+
+io.sockets.on('connection', function (socket) {
+  socket.emit('news', { hello: 'world' });
+  socket.on('my other event', function (data) {
+    console.log(data);
+  });
 });
 
 var port = Number(process.env.PORT || 5000);
