@@ -1,15 +1,28 @@
-var app = require("express")();
+var express = require("express");
+var app = express();
 var server = require('http').createServer(app)
 var io = require('socket.io').listen(server);
+
+app.use(express.static(__dirname + '/static'));
 
 app.get('/', function(req, res) {
   res.sendfile(__dirname + '/index.html');
 });
 
-io.sockets.on('connection', function (socket) {
+io.sockets.on('connection', function(socket) {
   socket.emit('news', { hello: 'world' });
-  socket.on('my other event', function (data) {
-    console.log(data);
+  socket.on('nick', function(name){
+  	socket.set('nick', name, function(){
+  		socket.emit('ready');
+  	});
+  });
+  socket.on('message', function(data){
+  	console.log(data.my);
+  	//socket.broadcast.emit(data);
+  	socket.emit('message', data);
+  	/*socket.get('nick', function(err, name){
+  		//yes
+  	});*/
   });
 });
 

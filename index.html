@@ -2,16 +2,49 @@
 <html>
 <head>
 	<title>Hello</title>
-	<script src="/socket.io/socket.io.js"></script>
-	<script>
-		var socket = io.connect();
-		socket.on('news', function (data) {
-			console.log(data);
-			socket.emit('my other event', { my: 'data' });
-		});
-	</script>
+	<script type="text/javascript" src="mspace.js"></script>
+	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+	<script type="text/javascript" src="asciimath.js"></script>
 </head>
-<body>
-Hello
+<body onload="math()">
+	<math></math>
+	<h1>Hello</h1>
+	<div>
+		<textarea placeholder="Type equations or plain text here!"id="in" type="text" onkeyup="math()" cols="80" rows="10"></textarea>
+		<div>
+			<p>Equations are formatted in plain text as: x^2+3x-5 which results in: <span id="demo">x^2+3x-5</span></p>
+			<p>To render symbols such as θ simply type the name, in this case: theta</p>
+		</div>
+		<div>
+			<span>Preview:</span>
+			<span id="out"></span>
+		</div>
+	</div>
 </body>
+	<script type="text/javascript">
+	var socket = io.connect();
+	socket.on('news', function (data) {
+		console.log(data);
+	});
+	socket.on('message', function(data){
+		console.log(data);
+	});
+	socket.emit('message', { my: 'data' });
+	translateOnLoad=false;
+	function math(){
+		var input = document.getElementById("in").value;
+		var out = document.getElementById("out");
+		var n = out.childNodes.length;
+		for (var i = 0; i < n; i++) 
+			out.removeChild(out.firstChild);
+		out.appendChild(document.createTextNode(input));
+		AMprocessNode(out);
+	}
+	function render(elem){
+		var element = document.getElementById(elem);
+		AMprocessNode(element);
+	}
+	//and now a bunch of render calls so the basic help doesnt look SUPER DUMB
+	render("demo");
+	</script>
 </html>
