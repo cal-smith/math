@@ -1,0 +1,12 @@
+body{
+	
+}
+
+textarea {
+	overflow: auto;
+	resize: none;
+}
+
+math{
+	color: blue;
+}
