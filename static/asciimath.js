@@ -43,7 +43,7 @@ var automathrecognize = true; // writing "amath" on page makes this true
 var checkForMathML = true;     // check if browser can display MathML
 var notifyIfNoMathML = true;   // display note at top if no MathML capability
 var alertIfNoMathML = false;   // show alert box if no MathML capability
-var translateOnLoad = true;    // set to false to do call translators from js 
+var translateOnLoad = false;    // set to false to do call translators from js 
 var translateLaTeX = true;     // false to preserve $..$, $$..$$
 var translateLaTeXformatting = true; // false to preserve \emph,\begin{},\end{}
 var translateASCIIMath = true; // false to preserve `..`
@@ -53,7 +53,7 @@ var displaystyle = true;      // puts limits above and below large operators
 var showasciiformulaonhover = true; // helps students learn ASCIIMath
 var decimalsign = ".";        // change to "," if you like, beware of `(1,2)`!
 var AMdelimiter1 = "`", AMescape1 = "\\\\`"; // can use other characters
-var AMdocumentId = "wikitext" // PmWiki element containing math (default=body)
+var AMdocumentId = "body" // PmWiki element containing math (default=body)
 var checkforprocessasciimathinmoodle = false; // true for systems like Moodle
 var dsvglocation = ""; // path to d.svg (blank if same as ASCIIMathML.js loc)
 
@@ -978,7 +978,7 @@ function processNodeR(n, linebreaks,latex) {
 function AMprocessNode(n, linebreaks, spanclassAM) {
   var frag,st;
   if (spanclassAM!=null) {
-    frag = document.getElementsByTagName("span")
+    frag = document.getElementsByTagName("span");
     for (var i=0;i<frag.length;i++)
       if (frag[i].className == "AM") 
         processNodeR(frag[i],linebreaks,false);
@@ -990,7 +990,7 @@ function AMprocessNode(n, linebreaks, spanclassAM) {
     if (st==null || /amath\b|\\begin{a?math}/i.test(st) ||
       st.indexOf(AMdelimiter1+" ")!=-1 || st.slice(-1)==AMdelimiter1 ||
       st.indexOf(AMdelimiter1+"<")!=-1 || st.indexOf(AMdelimiter1+"\n")!=-1) {
-      //processNodeR(n,linebreaks,false); cal: because quite franky i should be able to auto process anything
+      processNodeR(n,linebreaks,false); //cal here: because quite franky i should be able to auto process anything
     }
     processNodeR(n,linebreaks,false);
   }
@@ -1989,6 +1989,7 @@ function LMprocessNode(n) {
     st = n.innerHTML;
   } catch(err) {}
   var am = /amath\b|graph/i.test(st);
+  //am = true //cal here
   if ((st==null || st.indexOf("\$ ")!=-1 || st.indexOf("\$<")!=-1 || 
        st.indexOf("\\begin")!=-1 || am || st.slice(-1)=="$" ||
        st.indexOf("\$\n")!=-1)&& !/edit-content|HTMLArea|wikiedit|wpTextbox1/.test(st)){
