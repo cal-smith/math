@@ -17,9 +17,8 @@ io.sockets.on('connection', function(socket) {
   	});
   });
   socket.on('message', function(data){
-  	console.log(data.my);
-  	//socket.broadcast.emit(data);
-  	socket.emit('message', data);
+  	socket.broadcast.emit('message', data, "test");
+  	//socket.emit('message', data, "test");
   	/*socket.get('nick', function(err, name){
   		//yes
   	});*/

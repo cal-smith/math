@@ -10,3 +10,25 @@ textarea {
 math{
 	color: blue;
 }
+
+.message{
+	display: block;
+	padding: 5px;
+	margin-top: 5px; 
+}
+
+.you{
+	background: rgba(215, 244, 255, 1);
+}
+
+.them{
+	background: rgba(212, 255, 212, 1);
+}
+
+.time{
+	margin-right: 5px;
+}
+
+.math-contain{
+	display: flex;
+}
