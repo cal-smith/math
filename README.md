@@ -1,7 +1,7 @@
 math
 ====
 
-MathML based chat
+MathML based chat - Because we have the technology!
 
 Built with [socket.io](http://socket.io) and [express](http://expressjs.com) on node.js with [asciimath.js](http://mathcs.chapman.edu/~jipsen/mathml/asciimath.html) and [mathml.css](https://github.com/fred-wang/mathml.css/blob/master/mathml.css), hosted on heroku.
 
