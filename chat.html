@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Math!</title>
+	<link rel="stylesheet" type="text/css" href="/main.css">
+	<script type="text/javascript" src="/mspace.js"></script>
+	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+	<script type="text/javascript" src="/asciimath.js"></script>
+	<script type="text/javascript" src="/chat.js"></script>
+</head>
+<body>
+	<div id="overlay" class="overlay">
+		<div>
+			<form id="nickform">
+				<input id="nick" type="text" placeholder="Nickname" required="true" autofocus="true">
+				<input id="nick" type="text" placeholder="Password (optional)">
+				<input id="setnick" class="btn" type="submit" value="Join">
+			</form>
+		</div>
+	</div>
+	<math></math>
+	<h1 class="title">Math!</h1>
+	<div class="contain">
+		<div class="log_contain">
+			<div id="log" class="log"></div>
+		</div>
+		<div class="math-contain">
+			<div class="input-contain">
+				<textarea placeholder="Type equations or plain text here!"id="in" autofocus="true" onkeyup="math(event)" cols="80" rows="10"></textarea>
+				<div class="mini-help">
+					<p>Equations are formatted in plain text as: x^2+3x-5 which results in: <span id="demo_eq">x^2+3x-5</span></p>
+					<p>To render symbols such as <span id="demo_sy">theta</span> simply type the name, in this case: theta</p>
+				</div>
+			</div>
+			<div class="preview-contain">
+				<div>Preview:</div>
+				<span id="out"></span>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

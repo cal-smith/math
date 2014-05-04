@@ -3,84 +3,22 @@
 <head>
 	<title>Math!</title>
 	<link rel="stylesheet" type="text/css" href="main.css">
-	<script type="text/javascript" src="mspace.js"></script>
+	<script type="text/javascript" src="/mspace.js"></script>
 	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
-	<script type="text/javascript" src="asciimath.js"></script>
-	<script type="text/javascript">
-	var socket = io.connect();
-	socket.on('news', function (data) {
-		console.log(data);
-	});
-	socket.on('message', function(data){
-		console.log(data);
-		var time = new Date();
-		time = time.toLocaleTimeString('en-US', {hour:"numeric", minute:"numeric"});
-		elem("log").insertAdjacentHTML('beforeend', '<span class="message them"><span class="time">' + time +'</span><span class="message_txt">'+ data.msg + '</span></span>');
-		render("log");
-	});
-	
-	function sendmessage(msg){
-		elem("out").innerHTML = "";
-		elem("in").value = "";
-		socket.emit('message', {'msg': msg});
-		var time = new Date();
-		time = time.toLocaleTimeString('en-US', {hour:"numeric", minute:"numeric"});
-		elem("log").insertAdjacentHTML('beforeend', '<span class="message you"><span class="time">' + time +'</span><span class="message_txt">'+ msg + '</span></span>');
-		render("log");
-	}
-
-	function math(event){
-		if (AMnames.length==0) initSymbols();//"symbolizes" math
-		var input = document.getElementById("in").value;
-		var out = document.getElementById("out");
-		if (event.keyCode === 13) {
-			sendmessage(input);
-		} else{
-			input = input.replace(/\n/g, '<br>');
-			out.innerHTML = input;
-			AMprocessNode(out);
-		}
-		/*var n = out.childNodes.length;
-		for (var i = 0; i < n; i++){
-			out.removeChild(out.firstChild);
-		}*/
-	}
-	
-	function render(elem){
-		if (AMnames.length==0) initSymbols();//"symbolizes" math
-		var out = document.getElementById(elem);
-		AMprocessNode(out);//renders basic math
-	}
-	
-	function elem(el){
-		return document.getElementById(el);
-	}
-
-	//and now a bunch of render calls so the basic help doesnt look SUPER DUMB
-	document.addEventListener("DOMContentLoaded", function(event) {//kick off the party when the DOM is ready.
-		render("demo_eq");
-		render("demo_sy");
-	});
-	</script>
+	<script type="text/javascript" src="/asciimath.js"></script>
+	<script type="text/javascript" src="/main.js"></script>
 </head>
 <body>
 	<math></math>
 	<h1>Math!</h1>
-	<div id="log" class="log">
-			
-	</div>
-	<div class="math-contain">
-		<div class="input-contain">
-			<textarea placeholder="Type equations or plain text here!"id="in" type="text" onkeyup="math(event)" cols="80" rows="10"></textarea>
-			<div class="mini-help">
-				<p>Equations are formatted in plain text as: x^2+3x-5 which results in: <span id="demo_eq">x^2+3x-5</span></p>
-				<p>To render symbols such as <span id="demo_sy">theta</span> simply type the name, in this case: theta</p>
-			</div>
-		</div>
-		<div class="preview-contain">
-			<div>Preview:</div>
-			<span id="out"></span>
-		</div>
+	<div class="main">
+		<p>create channel:</p>
+		<form id="chanform">
+			<input id="create_title" type="text" placeholder="Title" required="true" autofocus="true">
+			<input id="create_pass" type="text" placeholder="Password (optional)">
+			<p>once created simply share the url (and optionally password) with anyone you want to join your channel.</p>
+			<input type="submit" id="create" class="btn" value="Create!">
+		</form>
 	</div>
 </body>
 </html>

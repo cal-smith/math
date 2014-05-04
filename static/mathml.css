@@ -196,7 +196,7 @@ semantics > *:first-child {
     display: inline;
 }
 annotation, annotation-xml {
-    font-family: monospace;
+    font-family: monospace !important;
     display: none !important;
 }
 math:active > semantics > *:first-child,

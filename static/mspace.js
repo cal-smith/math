@@ -29,7 +29,7 @@
             if (Math.abs(box.height - 23) > 1  || Math.abs(box.width - 77) > 1) {
                 // Insert the MathJax.js script.
                 link = document.createElement("link");
-                link.href = "mathml.css";
+                link.href = "/mathml.css";
                 link.rel = "stylesheet";
                 document.head.appendChild(link);
             }
