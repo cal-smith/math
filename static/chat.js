@@ -12,12 +12,6 @@ function start(){
 		elem("overlay").classList.add("hide");
 		chat.start();
 	});
-	elem("chanform").addEventListener("submit", function(event){
-		event.stopPropagation();
-		event.preventDefault();
-		var title = elem("create_title").value;
-		var pass = elem("create_pass").value;
-	});
 }
 
 //this is nasty and seriously insecure. in the future everyone will log in with (fb,g+,reddit,twitter,yourmom) to ensure the person you add is who they say they are. mimmicing irc is nice, but really isnt what this is about.
@@ -58,7 +52,7 @@ var chat = {
 	},
 	sendmessage : function(msg){
 		if (typeof nick != "undefined" && chat_init === true) {
-			chan.emit('message', {'msg': msg, 'nick':nick, 'room':'test'});
+			chan.emit('message', {'msg': msg, 'nick':nick, 'room':room});
 			var time = new Date();
 			time = time.toLocaleTimeString('en-US', {hour:"numeric", minute:"numeric"});
 			elem("log").insertAdjacentHTML('beforeend', '<span class="message you"><span class="time">' + time +'</span><span class="nick">'+ nick +': </span><span class="message_txt">'+ msg + '</span></span>');
