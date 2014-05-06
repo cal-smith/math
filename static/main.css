@@ -8,7 +8,9 @@ body{
 textarea {
 	overflow: auto;
 	height: 136px;
+	width: 660px;
 	resize: none;
+	display: block;
 }
 
 math{
@@ -85,12 +87,22 @@ input{
 	word-wrap: break-word;
 }
 
+.input-contain{
+
+}
+
+.mini-help{
+	
+}
+
 .preview-contain{
 	margin-left: 5px;
 	width: 629px;
-	height: 135px;
+	max-height: 135px;
+	min-height: 100px;
 	word-wrap: break-word;
 	overflow-y: auto;
+	flex: 1;
 }
 
 .message{
@@ -113,7 +125,43 @@ input{
 
 .math-contain{
 	display: flex;
+	flex-flow: row wrap;
 	position: absolute;
 	bottom: 0px;
 	margin-left: 10px;
 }
+
+@media all and (max-width: 600px){
+	.math-contain{
+		margin: 0;
+		width: 100%;
+	}
+
+	textarea {
+		width: calc(100% - 10px);;/*for mobile*/
+	}
+
+	.input-contain{
+		flex: 1 100%;/*for mobile*/
+	}
+
+	.mini-help{
+		display: none; /*for mobile*/
+	}
+
+	.preview-contain{
+		max-width: 629px;/*mobile and tablets*/
+		width: 100%;/*mobile and tablets*/
+		flex: 1 100%;/*for mobile*/
+	}
+
+}
+
+@media all and (max-width: 1024px){
+
+	.preview-contain{
+		max-width: 629px;/*mobile and tablets*/
+		width: 100%;/*mobile and tablets*/
+	}
+}
+/*for tablets set .preview-contain to max-width:629px*/
