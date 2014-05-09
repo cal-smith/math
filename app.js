@@ -72,7 +72,13 @@ io.sockets.on('connection', function(socket) {
 });
 
 var port = Number(process.env.OPENSHIFT_INTERNAL_PORT || process.env.OPENSHIFT_NODEJS_PORT  || process.env.PORT || 5000);
-var ip = process.env.OPENSHIFT_INTERNAL_IP || process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1' || 'localhost';
-server.listen(port, ip,function() {
-  console.log("Listening on " + port);
-});
+if (process.env.OPENSHIFT_INTERNAL_IP || process.env.OPENSHIFT_NODEJS_IP){
+	var ip = process.env.OPENSHIFT_INTERNAL_IP || process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1' || 'localhost';
+	server.listen(port, ip, function() {
+  		console.log("Listening on " + port);
+	});
+} else{
+	server.listen(port, function() {
+  		console.log("Listening on " + port);
+	});
+}
