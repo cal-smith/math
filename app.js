@@ -45,6 +45,17 @@ var chat = io.of('/chat').on('connection', function(socket) {
 	socket.on('message', function(data){
 		socket.broadcast.to(data.room).emit('message', data);
 	});
+
+	socket.on('disconnect', function(){
+		socket.get('nick', function(err, name){
+			room = io.sockets.manager.roomClients[socket.id];
+			console.log(room);
+			for (var room in room) {
+				room = room.substr(1);
+				socket.broadcast.to(room).emit('sys', {'msg': 'user '+ name +' left'});
+			}
+		});
+	})
 });
 
 io.sockets.on('connection', function(socket) {
