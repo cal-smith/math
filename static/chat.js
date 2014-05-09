@@ -1,4 +1,5 @@
 //globals
+"use strict";
 var nick,
 chat_init = false;
 var chan = io.connect(window.location.origin+'/chat');
