@@ -79,7 +79,7 @@ function math(event){
 		chat.sendmessage(input);
 		return false;
 	} else{
-		input = input.replace(/\n/g, '<br>');
+		input = input.replace(/\n/g, '<br>');//only convert \n to <br> if event.shiftKey === true. or perhaps just prevent enterkey default (ie: inserting \n)
 		out.innerHTML = input;
 		AMprocessNode(out);
 	}
