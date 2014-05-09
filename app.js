@@ -60,8 +60,8 @@ io.sockets.on('connection', function(socket) {
   });
 });
 
-var port = 8000;
-var ip = process.env.OPENSHIFT_NODEJS_IP;
+var port = process.env.OPENSHIFT_INTERNAL_PORT || process.env.OPENSHIFT_NODEJS_PORT  || 8080;
+var ip = process.env.OPENSHIFT_INTERNAL_IP || process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
 server.listen(port, ip,function() {
   console.log("Listening on " + port);
 });
