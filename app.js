@@ -2,7 +2,12 @@ var express = require("express");
 var app = express();
 var server = require('http').createServer(app)
 var io = require('socket.io').listen(server);
-
+/*
+tmp deploy notes
+merge branch to master (openshift->master || heroku -> master)
+depoly as git push heroku || openshift (master)
+what a mess
+*/
 app.use(express.static(__dirname + '/static'));
 
 app.get('/', function(req, res) {
