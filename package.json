@@ -1,6 +1,6 @@
 {
   "name": "math",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "math collab",
   "main": "app.js",
   "scripts": {
@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/hansolo669/math",
   "dependencies": {
-    "express": "^4.1.1",
-    "socket.io": "^0.9.16"
+    "express": "4.1.1",
+    "socket.io": "0.9.16"
   }
 }
