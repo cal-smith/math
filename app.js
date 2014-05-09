@@ -56,6 +56,7 @@ io.sockets.on('connection', function(socket) {
 });
 
 var port = Number(process.env.OPENSHIFT_NODEJS_PORT || 8080);
-server.listen(port, function() {
+var ip = process.env.OPENSHIFT_NODEJS_IP;
+server.listen(port, ip,function() {
   console.log("Listening on " + port);
 });
