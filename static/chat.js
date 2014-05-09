@@ -2,7 +2,7 @@
 "use strict";
 var nick,
 chat_init = false;
-var chan = io.connect(window.location.origin+'/chat:8000');
+var chan = io.connect(window.location.origin+':8000/chat');
 var room = window.location.pathname.slice(6);
 function start(){
 	elem("nickform").addEventListener("submit", function(event){
