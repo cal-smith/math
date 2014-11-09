@@ -39,7 +39,7 @@ var chat = io.of('/chat').on('connection', function(socket) {
 		for (var i = 0; i < user.length; i++) {
 			users.push(user[i].store.data);
 		}
-		socket.emit('sys', {'users':users})
+		socket.emit('sys', {'users':users});
 	});
 
 	socket.on('message', function(data){
