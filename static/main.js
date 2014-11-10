@@ -4,7 +4,6 @@ function start(){
 	elem("chanform").addEventListener("submit", function(event){
 		event.stopPropagation();
 		event.preventDefault();
-		console.log('yes');
 		var title = elem("create_title").value;
 		var pass = elem("create_pass").value;
 		socket.emit("create", {"title":title, "pass":pass});

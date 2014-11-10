@@ -15,7 +15,7 @@ function start(){
 	});
 }
 
-//this is nasty and seriously insecure. in the future everyone will log in with (fb,g+,reddit,twitter,yourmom) to ensure the person you add is who they say they are. mimmicing irc is nice, but really isnt what this is about.
+//in the future everyone will log in with (fb,g+,reddit,twitter)? mimmicing irc is nice, but really isnt what this is about.
 var chat = {
 	start : function(){
 		chat_init = true;
@@ -27,19 +27,26 @@ var chat = {
 				console.log(data);
 			});
 			chan.on('sys', function(data){
+				console.log(data);
 				if (data.users){
 					var message = 'users connected: ';
 					for (var i = 0; i < data.users.length; i++) {
-						message += data.users[i].nick+', ';
+						message += data.users[i]+', ';
 					}
 					chat.sysmsg(message);
-				} else if(data.msg){
+				}
+				
+				if(data.msg){
 					chat.sysmsg(data.msg);
+				}
+
+				if(data.title){
+					console.log(data);
+					elem("title").textContent = data.title;
 				}
 			});
 
 			chan.on('message', function(data){
-				console.log("hmm");
 				if (chat_init === true){
 					console.log(data);
 					var time = new Date();
@@ -56,7 +63,7 @@ var chat = {
 			chan.emit('message', {'msg': msg, 'nick':nick, 'room':room});
 			var time = new Date();
 			time = time.toLocaleTimeString('en-US', {hour:"numeric", minute:"numeric"});
-			elem("log").insertAdjacentHTML('beforeend', '<span class="message you"><span class="time">' + time +'</span><span class="nick">'+ nick +': </span><span class="message_txt">'+ msg + '</span></span>');
+			elem("log").insertAdjacentHTML('beforeend', '<span class="message you"><span class="time">' + time +'</span><span class="nick">: </span><span class="message_txt">'+ msg + '</span></span>');
 			render("log");
 			scroll();
 		}
@@ -102,7 +109,7 @@ function scroll(){
 		elem("log").scrollTop = scroll;
 	}
 }
-//end utility functions
+
 
 //kick off the party when the DOM is ready.
 document.addEventListener("DOMContentLoaded", function(event) {
