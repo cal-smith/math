@@ -1,17 +1,19 @@
 var express = require('express');
+var app = express();
 var session = require('express-session');
 var server = require('http').createServer(app)
 var io = require('socket.io').listen(server);
 var redis = require('redis');
 var async = require('async');
 
-var client = redis.createClient();
+var redishost = process.env.OPENSHIFT_REDIS_DB_HOST || '127.0.0.1';
+var redisport = process.env.OPENSHIFT_REDIS_DB_PORT || 6379;
+var client = redis.createClient(redisport, redishost);
 if (process.env.REDIS_PASSWORD) {
 	client.auth(process.env.REDIS_PASSWORD, function(){
 		console.log('redis connected');
 	});
 }
-var app = express();
 app.use(session({resave: true, saveUninitialized: true, secret:'math!'}))
 
 //wipe the _users and _rooms tmp keys
@@ -147,7 +149,7 @@ io.sockets.on('connection', function(socket) {
 		socket.emit('created', {"id":id});
   });
 });
-var port = process.env.OPENSHIFT_INTERNAL_PORT || process.env.OPENSHIFT_NODEJS_PORT  || 5000
+var port = process.env.OPENSHIFT_INTERNAL_PORT || process.env.OPENSHIFT_NODEJS_PORT  || 5000;
 var ip = process.env.OPENSHIFT_INTERNAL_IP || process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1' || 'localhost';
 server.listen(port, ip, function() {
 	console.log("Listening on " + port);
