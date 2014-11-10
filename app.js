@@ -5,13 +5,8 @@ var io = require('socket.io').listen(server);
 var redis = require('redis');
 client = redis.createClient();
 var async = require('async');
-/*
-tmp deploy notes
-merge branch to master (openshift->master || heroku -> master)
-depoly as git push heroku || openshift (master)
-what a mess
-*/
 
+//wipe the _users and _rooms tmp keys
 client.keys("*_users", function(err, obj){
 	client.del(obj, function(err, del){
 		console.info("deleted %d room user records", del);
@@ -30,8 +25,22 @@ app.get('/', function(req, res) {
   res.sendFile(__dirname + '/index.html');
 });
 
-app.get('/chat/:var', function(req, res){
-	res.sendFile(__dirname + '/chat.html');
+app.get('/chat/:room', function(req, res){
+	client.hgetall(req.params.room, function(err, obj){
+		if (obj.pass) {
+			res.redirect('/chat/'+ req.params.room +'/login');
+		} else {
+			res.sendFile(__dirname + '/chat.html');
+		}
+	});
+	//if password protected, and session unset for the room (var) redirect to chat/:var/login
+});
+
+app.get('/chat/:room/login', function(req, res){
+	res.send('hi');
+	//check password for the room
+	//set the session
+	//redirect to chat room
 });
 
 var chat = io.of('/chat').on('connection', function(socket) {
@@ -47,10 +56,21 @@ var chat = io.of('/chat').on('connection', function(socket) {
 		client.sadd(data.room+"_users", socket.id);
 		client.sadd(socket.id+"_rooms", data.room);
 		client.hgetall(socket.id, function(err, obj){
-			client.hgetall(data.room, function(err, room){
-				socket.broadcast.to(data.room).emit('sys', {'msg':'user '+ obj.nick +' joined', 'title':room.title});
-				socket.emit('sys', {'title':room.title});
-			});
+			if (obj == null) {
+				console.log("no nick@", socket.id);
+				socket.emit('error', "no nick set");
+			} else {
+				client.hgetall(data.room, function(err, room){
+					if (room == null) {
+						client.hmset(data.room, {"title":'Math!'});
+						socket.broadcast.to(data.room).emit('sys', {'msg':'user '+ obj.nick +' joined'});
+						socket.emit('sys', {'title':'Math!'});
+					} else {
+						socket.broadcast.to(data.room).emit('sys', {'msg':'user '+ obj.nick +' joined'});
+						socket.emit('sys', {'title':room.title});
+					}
+				});
+			}
 		});
 	});
 	
@@ -81,7 +101,6 @@ var chat = io.of('/chat').on('connection', function(socket) {
 	});
 
 	socket.on('disconnect', function(data){
-		console.log(data);
 		client.hgetall(socket.id, function(err, obj){
 			client.smembers(socket.id+"_rooms", function(err, rooms){
 				async.each(rooms, function(x, c){
@@ -90,7 +109,7 @@ var chat = io.of('/chat').on('connection', function(socket) {
 					socket.broadcast.to(x).emit('sys', {'msg': 'user '+ obj.nick +' left'});
 					c();
 				}, function(err){
-					//the only issue is if the node process goes down, the rooms arent wiped
+					console.error(err);
 				});
 			});
 		});
@@ -103,10 +122,7 @@ io.sockets.on('connection', function(socket) {
 			var r = (Date.now() + Math.random()*16)%16|0, v = c == 'x' ? r : (r&0x3|0x8);
 			return v.toString(16);
 		});
-		client.hmset(id, {"title":data.title});
-		//client.sadd(id+"_users")
-		//after we create an id, we should store it and the title/pass. then when someone connects to /chat/:id we fetch the id and data associated with it which will allow us to validate the pass, and set a nice title
-		//data.title
+		client.hmset(id, {"title":data.title, 'pass':data.pass});
 		//data.pass
 		socket.emit('created', {"id":id});
   });

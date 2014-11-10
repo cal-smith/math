@@ -33,11 +33,7 @@ var chat = {
 			chan.on('sys', function(data){
 				console.log(data);
 				if (data.users){
-					var message = 'users connected: ';
-					for (var i = 0; i < data.users.length; i++) {
-						message += data.users[i]+', ';
-					}
-					chat.sysmsg(message);
+					chat.sysmsg(('users connected: ' + data.users.join(', ')));
 				}
 				
 				if(data.msg){
