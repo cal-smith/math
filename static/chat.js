@@ -4,6 +4,7 @@ var nick,
 chat_init = false;
 var chan = io.connect(window.location.origin+'/chat');
 var room = window.location.pathname.slice(6);
+
 function start(){
 	elem("nickform").addEventListener("submit", function(event){
 		event.stopPropagation();
@@ -12,6 +13,7 @@ function start(){
 		chan.emit('nick', nick);
 		elem("overlay").classList.add("hide");
 		chat.start();
+		elem("in").focus();
 	});
 }
 
@@ -26,6 +28,8 @@ var chat = {
 			chan.on('news', function (data) {
 				console.log(data);
 			});
+
+			//message listeners
 			chan.on('sys', function(data){
 				console.log(data);
 				if (data.users){
@@ -49,24 +53,47 @@ var chat = {
 			chan.on('message', function(data){
 				if (chat_init === true){
 					console.log(data);
-					var time = new Date();
-					time = time.toLocaleTimeString('en-US', {hour:"numeric", minute:"numeric"});
-					elem("log").insertAdjacentHTML('beforeend', '<span class="message them"><span class="time">' + time +'</span><span class="nick">'+ data.nick +': </span><span class="message_txt">'+ data.msg + '</span></span>');
-					render("log");
-					scroll();
+					chat.msg(data.msg, data.nick);
 				}
 			});
+
+			elem("in").addEventListener("keyup", math);
+
+			elem("title").addEventListener("click", function(){
+				var title = elem("title");
+				if (title.firstChild.nodeName !== "INPUT") {
+					var text = title.textContent;
+					title.innerHTML = '<input type="text" placeholder="'+text+'"/>';
+					title.firstChild.focus();
+					title.firstChild.addEventListener("keyup", function(event){
+						if (event.keyCode === 13 && title.firstChild.value != "") {
+							title.textContent = title.firstChild.value;
+							chan.emit('title', {"title":title.textContent, "room":room});
+							elem("in").focus();
+						} else if (event.keyCode === 13 && title.firstChild.value == "") {
+							title.textContent = text;
+							elem("in").focus();
+						}
+					});
+				}
+			});
+
 		}
 	},
 	sendmessage : function(msg){
 		if (typeof nick != "undefined" && chat_init === true) {
 			chan.emit('message', {'msg': msg, 'nick':nick, 'room':room});
-			var time = new Date();
-			time = time.toLocaleTimeString('en-US', {hour:"numeric", minute:"numeric"});
-			elem("log").insertAdjacentHTML('beforeend', '<span class="message you"><span class="time">' + time +'</span><span class="nick">: </span><span class="message_txt">'+ msg + '</span></span>');
-			render("log");
-			scroll();
+			chat.msg(msg, '');
 		}
+	},
+	//not a fan of these because they build html strings and thats kinda unsafe
+	msg : function(msg, nick){
+		var time = new Date();
+		time = time.toLocaleTimeString('en-US', {hour:"numeric", minute:"numeric"});
+		var type = nick === ''?'you':'them';
+		elem("log").insertAdjacentHTML('beforeend', '<span class="message '+ type +'"><span class="time">' + time +'</span><span class="nick">'+ nick +': </span><span class="message_txt">'+ msg + '</span></span>');
+		render("log");
+		scroll();
 	},
 	sysmsg : function(msg){
 		elem("log").insertAdjacentHTML('beforeend', '<span class="message sys"><span class="nick">sys: </span><span class="message_txt">'+ msg + '</span></span>');
@@ -79,7 +106,7 @@ function math(event){
 	if (AMnames.length==0) initSymbols();//"symbolizes" math
 	var input = document.getElementById("in").value;
 	var out = document.getElementById("out");
-	if (event.keyCode === 13 && event.shiftKey === false) {
+	if (event.keyCode === 13 && event.shiftKey === false && input !== "") {
 		input = input.replace(/\n/g, '<br>');
 		elem("out").innerHTML = "";
 		elem("in").value = "";
@@ -101,6 +128,7 @@ function render(elem){
 function elem(el){
 	return document.getElementById(el);
 }
+
 function scroll(){
 	var scroll = elem("log").scrollHeight - elem("log").offsetHeight;
 	var scrolltop = elem("log").scrollTop;

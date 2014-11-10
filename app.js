@@ -54,6 +54,7 @@ var chat = io.of('/chat').on('connection', function(socket) {
 		});
 	});
 	
+	//im thinking users and title might want to be namespaced under sys and called as fns...that might make more sense
 	socket.on('users', function(data){
 		client.smembers(data.room+"_users", function(err, obj){
 			async.map(obj, function(x, c){
@@ -64,6 +65,15 @@ var chat = io.of('/chat').on('connection', function(socket) {
 				socket.emit('sys', {'users':result});
 			});		
 		});		
+	});
+
+	socket.on('title', function(data){
+		client.hmset(data.room, {"title":data.title});
+		socket.broadcast.to(data.room).emit('sys', {'title':data.title});
+	});
+
+	socket.on('sys', function(data){
+		//for client sys msgs
 	});
 
 	socket.on('message', function(data){
