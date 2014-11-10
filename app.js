@@ -1,10 +1,13 @@
 var express = require('express');
+var session = require('express-session');
 var app = express();
 var server = require('http').createServer(app)
 var io = require('socket.io').listen(server);
 var redis = require('redis');
 client = redis.createClient();
 var async = require('async');
+
+app.use(session({resave: true, saveUninitialized: true, secret:'math!'}))
 
 //wipe the _users and _rooms tmp keys
 client.keys("*_users", function(err, obj){
@@ -27,20 +30,32 @@ app.get('/', function(req, res) {
 
 app.get('/chat/:room', function(req, res){
 	client.hgetall(req.params.room, function(err, obj){
-		if (obj.pass) {
+		if (obj.pass && req.session[req.params.room] !== true) {
 			res.redirect('/chat/'+ req.params.room +'/login');
 		} else {
 			res.sendFile(__dirname + '/chat.html');
 		}
 	});
-	//if password protected, and session unset for the room (var) redirect to chat/:var/login
 });
 
 app.get('/chat/:room/login', function(req, res){
-	res.send('hi');
-	//check password for the room
-	//set the session
-	//redirect to chat room
+	res.sendFile(__dirname + '/login.html');
+});
+
+app.post('/chat/:room/login', function(req, res){
+	client.hgetall(req.params.room, function(err, obj){
+		//bcrypt this shit
+		if (obj == null) {
+			res.json({'error':'bad room'});
+		} else {
+			if (obj.pass === req.query.pass) {
+				req.session[req.params.room] = true;
+				res.json({'success':req.params.room});
+			} else {
+				res.json({'error':'wrong password'});
+			}
+		}
+	});
 });
 
 var chat = io.of('/chat').on('connection', function(socket) {
@@ -127,10 +142,9 @@ io.sockets.on('connection', function(socket) {
 		socket.emit('created', {"id":id});
   });
 });
-//process.env.OPENSHIFT_INTERNAL_PORT || process.env.OPENSHIFT_NODEJS_PORT  ||
-//var ip = process.env.OPENSHIFT_INTERNAL_IP || process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1' || 'localhost';
+var port = process.env.OPENSHIFT_INTERNAL_PORT || process.env.OPENSHIFT_NODEJS_PORT  || 5000
+var ip = process.env.OPENSHIFT_INTERNAL_IP || process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1' || 'localhost';
 //server.listen(port, ip, function() {
-var port = Number(process.env.PORT || 5000);
-server.listen(port, function() {
+server.listen(port, ip, function() {
 	console.log("Listening on " + port);
 });

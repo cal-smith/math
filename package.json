@@ -22,6 +22,7 @@
   "homepage": "https://github.com/hansolo669/math",
   "dependencies": {
     "express": "*",
+    "express-session":"*",
     "socket.io": "*",
     "redis": "*",
     "async": "*"
