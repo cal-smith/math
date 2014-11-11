@@ -28,6 +28,8 @@ input{
 
 .error{
 	background: #C75757;
+	padding: 5px;
+	color: whitesmoke;
 }
 
 .alert{
@@ -36,6 +38,10 @@ input{
 
 .main{
 	padding: 5px;
+}
+
+.pull-left{
+	float: left;
 }
 
 .btn{

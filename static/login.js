@@ -12,6 +12,10 @@ function start(){
 			if (data.success) {
 				window.location.href = window.location.origin + "/chat/" + data.success;
 			}
+			if (data.error) {
+				elem('error').classList.remove("hide");
+				elem('error').textContent = data.error;
+			}
 		});
 	});
 }
