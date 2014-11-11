@@ -6,8 +6,8 @@ var io = require('socket.io').listen(server);
 var redis = require('redis');
 var async = require('async');
 
-var redishost = process.env.OPENSHIFT_REDIS_DB_HOST || '127.0.0.1';
-var redisport = process.env.OPENSHIFT_REDIS_DB_PORT || 6379;
+var redishost = process.env.OPENSHIFT_REDIS_HOST || '127.0.0.1';
+var redisport = process.env.OPENSHIFT_REDIS_PORT || 6379;
 var client = redis.createClient(redisport, redishost);
 if (process.env.REDIS_PASSWORD) {
 	client.auth(process.env.REDIS_PASSWORD, function(){
